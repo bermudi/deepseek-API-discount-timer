@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek API Discount Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-200">
+    <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-6">
+        <h1 class="text-2xl font-bold text-center text-primary dark:text-primary">DeepSeek API Discount Timer</h1>
+        
+        <div class="space-y-2">
+            <div class="flex justify-between">
+                <span class="font-medium">Your Local Time:</span>
+                <span id="local-time" class="font-mono"></span>
+            </div>
+            <div class="flex justify-between">
+                <span class="font-medium">UTC Time:</span>
+                <span id="utc-time" class="font-mono"></span>
+            </div>
+        </div>
+        
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+            <div id="discount-status" class="text-lg font-medium text-center mb-2"></div>
+            <div class="flex flex-col items-center">
+                <div id="timer" class="text-3xl font-bold font-mono text-primary dark:text-primary my-2"></div>
+                <div id="time-remaining-label" class="text-sm text-gray-600 dark:text-gray-400"></div>
+            </div>
+        </div>
+        
+        <div class="space-y-2 text-sm">
+            <div class="mb-2">
+                <p><strong>Current Pricing:</strong></p>
+                <div id="current-pricing" class="pl-4 mt-1"></div>
+            </div>
+            <hr class="border-gray-200 dark:border-gray-700 my-2">
+            <p><strong>Daily Schedule:</strong></p>
+            <p class="pl-4"><span class="text-green-600 dark:text-green-400">Discount Period:</span> 16:30-00:30 UTC</p>
+            <p class="pl-4"><span class="text-red-600 dark:text-red-400">Standard Period:</span> 00:30-16:30 UTC</p>
+            <div id="local-schedule" class="mt-2 text-xs text-gray-600 dark:text-gray-400"></div>
+        </div>
+        
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p>DeepSeek provides off-peak pricing discounts during 16:30-00:30 UTC each day. The completion timestamp of each request determines its pricing tier.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Check for dark mode preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // Utility function to format time in 24-hour format
+        function formatTime(hours, minutes) {
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        }
+        
+        // Function to convert UTC time to local time
+        function convertUTCToLocal(utcHours, utcMinutes) {
+            const date = new Date();
+            date.setUTCHours(utcHours, utcMinutes, 0, 0);
+            return {
+                hours: date.getHours(),
+                minutes: date.getMinutes()
+            };
+        }
+        
+        // Show discount schedule in local time
+        function displayLocalSchedule() {
+            const discountStartLocal = convertUTCToLocal(16, 30);
+            const discountEndLocal = convertUTCToLocal(0, 30);
+            
+            const localScheduleElem = document.getElementById('local-schedule');
+            localScheduleElem.innerHTML = `
+                <p><strong>In your local time:</strong></p>
+                <p class="pl-2"><span class="text-green-600 dark:text-green-400">Discount Period:</span> 
+                    ${formatTime(discountStartLocal.hours, discountStartLocal.minutes)} - 
+                    ${formatTime(discountEndLocal.hours, discountEndLocal.minutes)}
+                </p>
+                <p class="pl-2"><span class="text-red-600 dark:text-red-400">Standard Period:</span> 
+                    ${formatTime(discountEndLocal.hours, discountEndLocal.minutes)} - 
+                    ${formatTime(discountStartLocal.hours, discountStartLocal.minutes)}
+                </p>
+            `;
+        }
+        
+        function updateTime() {
+            const now = new Date();
+            
+            // Display local time
+            const localTimeElement = document.getElementById('local-time');
+            localTimeElement.textContent = now.toLocaleTimeString();
+            
+            // Display UTC time
+            const utcTimeElement = document.getElementById('utc-time');
+            const utcHours = now.getUTCHours();
+            const utcMinutes = now.getUTCMinutes();
+            const utcSeconds = now.getUTCSeconds();
+            utcTimeElement.textContent = 
+                `${String(utcHours).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')}:${String(utcSeconds).padStart(2, '0')}`;
+            
+            // Calculate current UTC time in minutes since midnight
+            const currentUtcMinutes = utcHours * 60 + utcMinutes;
+            
+            // Discount period: 16:30-00:30 UTC
+            const discountStartMinutes = 16 * 60 + 30; // 16:30 UTC in minutes
+            const discountEndMinutes = 0 * 60 + 30;    // 00:30 UTC next day in minutes
+            
+            // Check if current time is within discount period
+            // Discount is active from 16:30 to 00:30 UTC (spans across midnight)
+            const isDiscount = 
+                (currentUtcMinutes >= discountStartMinutes) || 
+                (currentUtcMinutes < discountEndMinutes);
+            
+            const discountStatusElement = document.getElementById('discount-status');
+            const timerElement = document.getElementById('timer');
+            const timeRemainingLabel = document.getElementById('time-remaining-label');
+            const currentPricingElement = document.getElementById('current-pricing');
+            
+            // Calculate time remaining until next transition
+            let minutesRemaining = 0;
+            if (isDiscount) {
+                // Currently in discount period
+                discountStatusElement.textContent = "Discount Pricing Active";
+                discountStatusElement.classList.add('text-green-600', 'dark:text-green-400');
+                discountStatusElement.classList.remove('text-red-600', 'dark:text-red-400');
+                
+                if (currentUtcMinutes >= discountStartMinutes) {
+                    // It's after 16:30, count until 00:30
+                    minutesRemaining = (24 * 60 + discountEndMinutes) - currentUtcMinutes;
+                } else {
+                    // It's after midnight but before 00:30, count until 00:30
+                    minutesRemaining = discountEndMinutes - currentUtcMinutes;
+                }
+                timeRemainingLabel.textContent = "until standard pricing begins";
+                
+                // Update current pricing info
+                currentPricingElement.innerHTML = `
+                    <ul class="list-disc list-inside text-green-600 dark:text-green-400">
+                        <li>deepseek-chat: 50% OFF</li>
+                        <li>deepseek-reasoner: 75% OFF</li>
+                    </ul>
+                `;
+            } else {
+                // Currently in standard period
+                discountStatusElement.textContent = "Standard Pricing Active";
+                discountStatusElement.classList.add('text-red-600', 'dark:text-red-400');
+                discountStatusElement.classList.remove('text-green-600', 'dark:text-green-400');
+                
+                // Time until start of discount period (at 16:30 UTC)
+                minutesRemaining = discountStartMinutes - currentUtcMinutes;
+                timeRemainingLabel.textContent = "until discount pricing begins";
+                
+                // Update current pricing info
+                currentPricingElement.innerHTML = `
+                    <ul class="list-disc list-inside text-red-600 dark:text-red-400">
+                        <li>deepseek-chat: Standard pricing</li>
+                        <li>deepseek-reasoner: Standard pricing</li>
+                    </ul>
+                `;
+            }
+            
+            // Calculate hours, minutes and seconds
+            const hoursRemaining = Math.floor(minutesRemaining / 60);
+            const remainingMinutes = minutesRemaining % 60;
+            const remainingSeconds = 59 - utcSeconds;
+            
+            // Format timer display
+            timerElement.textContent = `${String(hoursRemaining).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+        
+        // Display local schedule times
+        displayLocalSchedule();
+        
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
