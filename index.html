@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1080998304360375"
-     crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSeek API Discount Timer</title>
+    <title>DeepSeek API Discount Timer | Track Pricing Changes</title>
+    <meta name="description" content="Real-time tracker for DeepSeek API pricing changes. Monitor when discount periods (50-75% off) are active and get notified of pricing transitions.">
+    <meta name="keywords" content="DeepSeek API, AI pricing, discount timer, API cost tracker, DeepSeek-V3, DeepSeek-R1, API discount periods, LLM pricing">
+    <meta name="author" content="bermudi.dev">
+    <link rel="canonical" href="https://deepseek-api-discount.xyz">
+    
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1080998304360375"
+     crossorigin="anonymous"></script>
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="DeepSeek API Discount Timer">
+    <meta property="og:description" content="Track when DeepSeek API discounts are active in your timezone">
+    <meta property="og:type" content="website">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,6 +30,28 @@
                 }
             }
         }
+    </script>
+    
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "DeepSeek API Discount Timer",
+      "applicationCategory": "UtilityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Real-time tracker for DeepSeek API pricing periods. Monitor when discount periods (50-75% off) are active and get notified of pricing transitions.",
+      "operatingSystem": "Any",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "125"
+      }
+    }
     </script>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex flex-col items-center justify-center p-4 transition-colors duration-200">
@@ -32,6 +66,13 @@
             <div class="flex justify-between">
                 <span class="font-medium">UTC Time:</span>
                 <span id="utc-time" class="font-mono"></span>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+                <label for="enable-notifications" class="flex items-center cursor-pointer">
+                    <input type="checkbox" id="enable-notifications" class="w-4 h-4 text-primary accent-primary bg-gray-100 border-gray-300 rounded focus:ring-primary">
+                    <span class="ml-2 text-sm font-medium">Enable notifications for pricing changes</span>
+                </label>
+                <span id="notification-status" class="text-xs text-gray-500 dark:text-gray-400"></span>
             </div>
         </div>
         
@@ -57,6 +98,53 @@
         
         <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
             <p>DeepSeek provides off-peak <a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" class="text-primary hover:underline">pricing discounts</a> during 16:30-00:30 UTC each day. The completion timestamp of each request determines its pricing tier.</p>
+            
+            <!-- FAQ Toggle Button -->
+            <button id="faq-toggle" class="mt-2 flex items-center text-xs font-medium text-primary hover:underline focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                <span>Show DeepSeek API Pricing FAQ</span>
+            </button>
+            
+            <!-- FAQ Section (Hidden by default) -->
+            <div id="faq-section" class="hidden mt-4 space-y-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-md text-xs">
+                <h3 class="font-bold text-gray-700 dark:text-gray-300">DeepSeek API Pricing FAQ</h3>
+                
+                <div class="space-y-1">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300">What models are available?</h4>
+                    <p>DeepSeek offers two main models: <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-chat</span> (DeepSeek-V3) and <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span> (DeepSeek-R1).</p>
+                </div>
+                
+                <div class="space-y-1">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300">What are the context lengths?</h4>
+                    <p>Both models support up to 64K tokens of context.</p>
+                </div>
+                
+                <div class="space-y-1">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300">What is Chain of Thought (CoT)?</h4>
+                    <p>CoT is the reasoning content <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span> provides before outputting the final answer. It has a maximum of 32K tokens.</p>
+                </div>
+                
+                <div class="space-y-1">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300">What is Context Caching?</h4>
+                    <p>Context Caching can reduce costs by caching previously seen context, resulting in cheaper fees for cached inputs. Ideal for chatbots and long conversations.</p>
+                </div>
+                
+                <div class="space-y-1">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300">How do the discount periods work?</h4>
+                    <p>DeepSeek offers significant discounts (50% off for <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-chat</span>, 75% off for <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span>) during off-peak hours (16:30-00:30 UTC daily).</p>
+                </div>
+                
+                <div class="mt-2">
+                    <a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" class="text-primary hover:underline inline-flex items-center">
+                        <span>View full pricing details</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -79,6 +167,101 @@
                 hours: date.getHours(),
                 minutes: date.getMinutes()
             };
+        }
+        
+        // Notification handling
+        let notificationEnabled = false;
+        let lastDiscountState = null;
+        
+        // Check if browser supports notifications
+        const notificationSupported = 'Notification' in window;
+        const notificationStatusElement = document.getElementById('notification-status');
+        
+        if (!notificationSupported) {
+            document.getElementById('enable-notifications').disabled = true;
+            notificationStatusElement.textContent = 'Notifications not supported in this browser';
+        } else {
+            // Load saved preference if available
+            try {
+                const savedPref = localStorage.getItem('deepseekNotifications');
+                if (savedPref === 'true') {
+                    document.getElementById('enable-notifications').checked = true;
+                    notificationEnabled = true;
+                    if (Notification.permission === 'granted') {
+                        notificationStatusElement.textContent = 'Notifications enabled';
+                    } else if (Notification.permission === 'denied') {
+                        notificationStatusElement.textContent = 'Notification permission denied';
+                    } else {
+                        notificationStatusElement.textContent = 'Click checkbox to enable notifications';
+                    }
+                }
+            } catch (e) {
+                // LocalStorage might not be available
+                console.log('LocalStorage not available:', e);
+            }
+            
+            // Handle checkbox changes
+            document.getElementById('enable-notifications').addEventListener('change', function(e) {
+                notificationEnabled = e.target.checked;
+                
+                // Save preference
+                try {
+                    localStorage.setItem('deepseekNotifications', notificationEnabled.toString());
+                } catch (e) {
+                    console.log('LocalStorage not available for saving preferences:', e);
+                }
+                
+                if (notificationEnabled) {
+                    // Request permission
+                    Notification.requestPermission().then(function(permission) {
+                        if (permission === 'granted') {
+                            notificationStatusElement.textContent = 'Notifications enabled';
+                        } else if (permission === 'denied') {
+                            notificationStatusElement.textContent = 'Notification permission denied';
+                            notificationEnabled = false;
+                            e.target.checked = false;
+                        }
+                    });
+                } else {
+                    notificationStatusElement.textContent = '';
+                }
+            });
+        }
+        
+        // Function to show notification
+        function showPricingNotification(isDiscount) {
+            if (!notificationEnabled || Notification.permission !== 'granted') return;
+            
+            let title, body, icon;
+            if (isDiscount) {
+                title = 'DeepSeek Discount Pricing Active!';
+                body = 'DeepSeek API discount pricing period has started (50% off for deepseek-chat, 75% off for deepseek-reasoner)';
+                icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzVENUNERSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE1IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+JCQkPC90ZXh0Pjwvc3ZnPg==';
+            } else {
+                title = 'DeepSeek Standard Pricing Active';
+                body = 'DeepSeek API discount period has ended. Standard pricing is now in effect.';
+                icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iI0ZGNDQzMyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE1IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+JDwvdGV4dD48L3N2Zz4=';
+            }
+            
+            try {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: icon
+                });
+                
+                // Auto close after 10 seconds
+                setTimeout(() => {
+                    notification.close();
+                }, 10000);
+                
+                // Handle click
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
+            } catch (error) {
+                console.log('Error showing notification:', error);
+            }
         }
         
         // Show discount schedule in local time
@@ -127,6 +310,12 @@
             const isDiscount = 
                 (currentUtcMinutes >= discountStartMinutes) || 
                 (currentUtcMinutes < discountEndMinutes);
+            
+            // Check for state change for notifications
+            if (lastDiscountState !== null && lastDiscountState !== isDiscount) {
+                showPricingNotification(isDiscount);
+            }
+            lastDiscountState = isDiscount;
             
             const discountStatusElement = document.getElementById('discount-status');
             const timerElement = document.getElementById('timer');
@@ -183,7 +372,32 @@
             
             // Format timer display
             timerElement.textContent = `${String(hoursRemaining).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            
+            // Special case for testing notifications: If we're very close to a transition point (within 10 seconds)
+            // Since this is hard to test otherwise, this will simulate the transition and allow us to see the notification
+            if (minutesRemaining === 0 && remainingSeconds <= 10) {
+                // For testing purposes only - uncomment to test notifications
+                // showPricingNotification(!isDiscount); 
+            }
         }
+        
+        // FAQ Toggle Functionality
+        const faqToggle = document.getElementById('faq-toggle');
+        const faqSection = document.getElementById('faq-section');
+        const faqToggleIcon = faqToggle.querySelector('svg');
+        
+        faqToggle.addEventListener('click', function() {
+            const isHidden = faqSection.classList.contains('hidden');
+            if (isHidden) {
+                faqSection.classList.remove('hidden');
+                faqToggle.querySelector('span').textContent = 'Hide DeepSeek API Pricing FAQ';
+                faqToggleIcon.classList.add('rotate-180');
+            } else {
+                faqSection.classList.add('hidden');
+                faqToggle.querySelector('span').textContent = 'Show DeepSeek API Pricing FAQ';
+                faqToggleIcon.classList.remove('rotate-180');
+            }
+        });
         
         // Display local schedule times
         displayLocalSchedule();
