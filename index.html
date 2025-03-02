@@ -7,7 +7,13 @@
     <meta name="description" content="Real-time tracker for DeepSeek API pricing changes. Monitor when discount periods (50-75% off) are active and get notified of pricing transitions.">
     <meta name="keywords" content="DeepSeek API, AI pricing, discount timer, API cost tracker, DeepSeek-V3, DeepSeek-R1, API discount periods, LLM pricing">
     <meta name="author" content="bermudi.dev">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://deepseek-api-discount.xyz">
+    
+    <!-- Resource hints for performance -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com">
+    <link rel="dns-prefetch" href="https://api-docs.deepseek.com">
     
     <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1080998304360375"
@@ -17,6 +23,15 @@
     <meta property="og:title" content="DeepSeek API Discount Timer">
     <meta property="og:description" content="Track when DeepSeek API discounts are active in your timezone">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deepseek-api-discount.xyz">
+    <meta property="og:image" content="https://deepseek-api-discount.xyz/og-image.png">
+    <meta property="og:site_name" content="DeepSeek API Discount Timer">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DeepSeek API Discount Timer">
+    <meta name="twitter:description" content="Track DeepSeek API pricing discounts in real-time">
+    <meta name="twitter:image" content="https://deepseek-api-discount.xyz/og-image.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -32,7 +47,7 @@
         }
     </script>
     
-    <!-- Structured data for search engines -->
+    <!-- Structured data for Software Application -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -50,7 +65,91 @@
         "@type": "AggregateRating",
         "ratingValue": "4.8",
         "ratingCount": "125"
-      }
+      },
+      "url": "https://deepseek-api-discount.xyz",
+      "applicationCategory": "UtilityApplication",
+      "applicationSubCategory": "API Tool",
+      "datePublished": "2024-03-01"
+    }
+    </script>
+    
+    <!-- FAQ Page structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What models are available?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DeepSeek offers two main models: deepseek-chat (DeepSeek-V3) and deepseek-reasoner (DeepSeek-R1)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the context lengths?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both models support up to 64K tokens of context."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Chain of Thought (CoT)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CoT is the reasoning content deepseek-reasoner provides before outputting the final answer. It helps the model to break down complex problems into smaller steps."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Context Caching?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Context Caching can reduce costs by caching previously seen context, resulting in cheaper fees for cached inputs. Ideal for chatbots and long conversations."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do the discount periods work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DeepSeek offers significant discounts (50% off for deepseek-chat, 75% off for deepseek-reasoner) during off-peak hours (16:30-00:30 UTC daily)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do deduction rules work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The expense = number of tokens × price. The corresponding fees will be directly deducted from your topped-up balance or granted balance, with a preference for using the granted balance first when both balances are available."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- BreadcrumbList structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://deepseek-api-discount.xyz"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "DeepSeek API Discount Timer",
+          "item": "https://deepseek-api-discount.xyz"
+        }
+      ]
     }
     </script>
 </head>
@@ -58,7 +157,7 @@
     <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-6">
         <h1 class="text-2xl font-bold text-center text-primary dark:text-primary">DeepSeek API Discount Timer</h1>
         
-        <div class="space-y-2">
+        <section class="space-y-2" aria-label="Time information">
             <div class="flex justify-between">
                 <span class="font-medium">Your Local Time:</span>
                 <span id="local-time" class="font-mono"></span>
@@ -74,30 +173,30 @@
                 </label>
                 <span id="notification-status" class="text-xs text-gray-500 dark:text-gray-400"></span>
             </div>
-        </div>
+        </section>
         
-        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+        <section class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4" aria-label="Discount status">
             <div id="discount-status" class="text-lg font-medium text-center mb-2"></div>
             <div class="flex flex-col items-center">
                 <div id="timer" class="text-3xl font-bold font-mono text-primary dark:text-primary my-2"></div>
                 <div id="time-remaining-label" class="text-sm text-gray-600 dark:text-gray-400"></div>
             </div>
-        </div>
+        </section>
         
-        <div class="space-y-2 text-sm">
+        <section class="space-y-2 text-sm" aria-label="Pricing information">
             <div class="mb-2">
-                <p><strong>Current Pricing:</strong></p>
+                <h2 class="text-base font-bold"><strong>Current Pricing:</strong></h2>
                 <div id="current-pricing" class="pl-4 mt-1"></div>
             </div>
             <hr class="border-gray-200 dark:border-gray-700 my-2">
-            <p><strong>Daily Schedule:</strong></p>
+            <h2 class="text-base font-bold"><strong>Daily Schedule:</strong></h2>
             <p class="pl-4"><span class="text-green-600 dark:text-green-400">Discount Period:</span> 16:30-00:30 UTC</p>
             <p class="pl-4"><span class="text-red-600 dark:text-red-400">Standard Period:</span> 00:30-16:30 UTC</p>
             <div id="local-schedule" class="mt-2 text-xs text-gray-600 dark:text-gray-400"></div>
-        </div>
+        </section>
         
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p>DeepSeek provides off-peak <a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" class="text-primary hover:underline">pricing discounts</a> during 16:30-00:30 UTC each day. The completion timestamp of each request determines its pricing tier.</p>
+        <footer class="text-xs text-gray-500 dark:text-gray-400 mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <p>DeepSeek provides off-peak <a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" rel="noopener" class="text-primary hover:underline">pricing discounts</a> during 16:30-00:30 UTC each day. The completion timestamp of each request determines its pricing tier.</p>
             
             <!-- FAQ Toggle Button -->
             <button id="faq-toggle" class="mt-2 flex items-center text-xs font-medium text-primary hover:underline focus:outline-none">
@@ -108,41 +207,45 @@
             </button>
             
             <!-- FAQ Section (Hidden by default) -->
-            <div id="faq-section" class="hidden mt-4 space-y-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-md text-xs">
+            <section id="faq-section" class="hidden mt-4 space-y-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-md text-xs">
                 <h3 class="font-bold text-gray-700 dark:text-gray-300">DeepSeek API Pricing FAQ</h3>
                 
-                <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">What models are available?</h4>
                     <p>DeepSeek offers two main models: <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-chat</span> (DeepSeek-V3) and <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span> (DeepSeek-R1).</p>
-                </div>
+                </article>
                 
-                <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">What are the context lengths?</h4>
                     <p>Both models support up to 64K tokens of context.</p>
-                </div>
+                </article>
                 
-                <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">What is Chain of Thought (CoT)?</h4>
-                    <p>CoT is the reasoning content <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span> provides before outputting the final answer. It helps the model to break down complex problems into smaller steps. For more information, see the <a href="https://api-docs.deepseek.com/guides/reasoning_model" target="_blank" class="text-primary hover:underline">Reasoning Model documentation</a>.</p>
-                </div>
+                    <p>CoT is the reasoning content <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span> provides before outputting the final answer. It helps the model to break down complex problems into smaller steps. For more information, see the <a href="https://api-docs.deepseek.com/guides/reasoning_model" target="_blank" rel="noopener" class="text-primary hover:underline">Reasoning Model documentation</a>.</p>
+                </article>
                 
-                <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">What is Context Caching?</h4>
-                    <p>Context Caching can reduce costs by caching previously seen context, resulting in cheaper fees for cached inputs. Ideal for chatbots and long conversations. The service runs automatically, and billing is based on actual cache hits. For more details, check the <a href="https://api-docs.deepseek.com/news/news0802" target="_blank" class="text-primary hover:underline">Context Caching documentation</a>.</p>
-                </div>
+                    <p>Context Caching can reduce costs by caching previously seen context, resulting in cheaper fees for cached inputs. Ideal for chatbots and long conversations. The service runs automatically, and billing is based on actual cache hits. For more details, check the <a href="https://api-docs.deepseek.com/news/news0802" target="_blank" rel="noopener" class="text-primary hover:underline">Context Caching documentation</a>.</p>
+                </article>
                 
-                <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">How do the discount periods work?</h4>
                     <p>DeepSeek offers significant discounts (50% off for <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-chat</span>, 75% off for <span class="font-mono bg-gray-100 dark:bg-gray-600 px-1 rounded">deepseek-reasoner</span>) during off-peak hours (16:30-00:30 UTC daily).</p>
-                </div>
+                </article>
 
-                 <div class="space-y-1">
+                <article class="space-y-1">
                     <h4 class="font-semibold text-gray-700 dark:text-gray-300">How do deduction rules work?</h4>
-                    <p>The expense = number of tokens × price. The corresponding fees will be directly deducted from your topped-up balance or granted balance, with a preference for using the granted balance first when both balances are available. For more details, check the <a href="https://api-docs.deepseek.com/quick_start/pricing/#deduction-rules" target="_blank" class="text-primary hover:underline">Deduction Rules documentation</a>.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <p>The expense = number of tokens × price. The corresponding fees will be directly deducted from your topped-up balance or granted balance, with a preference for using the granted balance first when both balances are available. For more details, check the <a href="https://api-docs.deepseek.com/quick_start/pricing/#deduction-rules" target="_blank" rel="noopener" class="text-primary hover:underline">Deduction Rules documentation</a>.</p>
+                </article>
+            </section>
+            
+            <!-- <div class="mt-4 text-center text-xs">
+                <p>© 2024 <a href="https://bermudi.dev" rel="author" class="hover:underline">bermudi.dev</a> | <a href="/sitemap.xml" class="hover:underline">Sitemap</a> | <a href="/privacy-policy" class="hover:underline">Privacy Policy</a></p>
+            </div> -->
+        </footer>
+    </main>
     
     <script>
         // Check for dark mode preference
